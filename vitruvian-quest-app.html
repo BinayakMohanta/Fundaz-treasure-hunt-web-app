@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitruvian Quest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #3C2F2F 0%, #5D4037 100%);
+            color: #F5F5DC;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 2px solid rgba(245, 245, 220, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #F5F5DC, #F0E68C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(60, 47, 47, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .screen {
+            display: none;
+            background: rgba(245, 245, 220, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(60, 47, 47, 0.4);
+            border: 1px solid rgba(240, 230, 140, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #F0E68C;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(245, 245, 220, 0.9);
+            color: #3C2F2F;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            background: #F5F5DC;
+            box-shadow: 0 0 15px rgba(240, 230, 140, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #8B7355, #A0826D);
+            color: #F5F5DC;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            margin: 10px 5px;
+            box-shadow: 0 4px 15px rgba(139, 115, 85, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 115, 85, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn.secondary {
+            background: linear-gradient(45deg, #BDB76B, #F0E68C);
+            color: #3C2F2F;
+            box-shadow: 0 4px 15px rgba(189, 183, 107, 0.4);
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 6px 20px rgba(189, 183, 107, 0.6);
+        }
+
+        .team-card {
+            background: rgba(245, 245, 220, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateX(5px);
+            background: rgba(245, 245, 220, 0.25);
+        }
+
+        .route-red { border-left-color: #A0522D; }
+        .route-blue { border-left-color: #8B7355; }
+        .route-green { border-left-color: #BDB76B; }
+        .route-yellow { border-left-color: #F0E68C; }
+        .route-purple { border-left-color: #DEB887; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status-waiting {
+            background: #F0E68C;
+            color: #3C2F2F;
+        }
+
+        .status-active {
+            background: #BDB76B;
+            color: #3C2F2F;
+        }
+
+        .status-completed {
+            background: #8B7355;
+            color: #F5F5DC;
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .riddle-card {
+            background: linear-gradient(135deg, rgba(245, 245, 220, 0.15), rgba(240, 230, 140, 0.1));
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(240, 230, 140, 0.4);
+        }
+
+        .stage-indicator {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stage-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(245, 245, 220, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #A0522D;
+            transform: scale(1.3);
+        }
+
+        .dot.completed {
+            background: #BDB76B;
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            background: rgba(60, 47, 47, 0.6);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #F0E68C;
+            border: 1px solid rgba(240, 230, 140, 0.3);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .error {
+            background: rgba(160, 82, 45, 0.3);
+            border: 1px solid #A0522D;
+            color: #F5F5DC;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background: rgba(189, 183, 107, 0.3);
+            border: 1px solid #BDB76B;
+            color: #F5F5DC;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .loading {
+            background: rgba(240, 230, 140, 0.3);
+            border: 1px solid #F0E68C;
+            color: #F5F5DC;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .leaderboard {
+            background: rgba(245, 245, 220, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(240, 230, 140, 0.3);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(245, 245, 220, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(245, 245, 220, 0.2);
+        }
+
+        .rank {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .firebase-config {
+            background: rgba(245, 245, 220, 0.1);
+            border: 1px solid rgba(240, 230, 140, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .config-input {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .screen {
+                padding: 20px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Vitruvian Quest</h1>
+            <p class="subtitle">Embark on the Order of the Quill Adventure</p>
+        </div>
+
+        <!-- Firebase Configuration -->
+        <div id="firebase-config" class="screen active">
+            <h2>Firebase Configuration</h2>
+            <div class="firebase-config">
+                <p style="margin-bottom: 20px;">To use this app, you need to set up Firebase. Follow these steps:</p>
+                <ol style="margin-bottom: 20px; line-height: 1.6;">
+                    <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color: #F0E68C;">Firebase Console</a></li>
+                    <li>Create a new project or use existing one</li>
+                    <li>Enable Firestore Database in test mode</li>
+                    <li>Go to Project Settings → General → Your apps</li>
+                    <li>Add a web app and copy the config values below</li>
+                </ol>
+                
+                <div class="form-group">
+                    <label>API Key:</label>
+                    <input type="text" id="apiKey" placeholder="Your Firebase API Key">
+                </div>
+                <div class="form-group">
+                    <label>Auth Domain:</label>
+                    <input type="text" id="authDomain" placeholder="your-project.firebaseapp.com">
+                </div>
+                <div class="form-group">
+                    <label>Project ID:</label>
+                    <input type="text" id="projectId" placeholder="your-project-id">
+                </div>
+                <div class="form-group">
+                    <label>Storage Bucket:</label>
+                    <input type="text" id="storageBucket" placeholder="your-project.appspot.com">
+                </div>
+                <div class="form-group">
+                    <label>Messaging Sender ID:</label>
+                    <input type="text" id="messagingSenderId" placeholder="123456789">
+                </div>
+                <div class="form-group">
+                    <label>App ID:</label>
+                    <input type="text" id="appId" placeholder="1:123456789:web:abcdef123456">
+                </div>
+                
+                <button class="btn" onclick="initializeFirebase()">Connect to Firebase</button>
+                <button class="btn secondary" onclick="loadDemoMode()">Use Demo Mode (No Database)</button>
+            </div>
+        </div>
+
+        <!-- Welcome Screen -->
+        <div id="welcome" class="screen">
+            <h2 style="text-align: center; margin-bottom: 30px;">Welcome to Vitruvian Quest</h2>
+            <p style="text-align: center; margin-bottom: 30px; line-height: 1.6;">
+                Join the legendary treasure hunt through campus locations. Solve riddles, work as a team, 
+                and uncover the secrets of the Order of the Quill!
+            </p>
+            <div id="connection-status" class="loading" style="display: none;">
+                Connecting to database...
+            </div>
+            <div class="nav-buttons">
+                <button class="btn" onclick="showScreen('registration')">Register Team</button>
+                <button class="btn secondary" onclick="showScreen('team-login')">Team Login</button>
+                <button class="btn secondary" onclick="showScreen('admin-login')">Admin Login</button>
+            </div>
+        </div>
+
+        <!-- Team Registration -->
+        <div id="registration" class="screen">
+            <h2>Team Registration</h2>
+            <form id="registration-form">
+                <div class="form-group">
+                    <label>Team Name:</label>
+                    <input type="text" id="team-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Team Leader Name:</label>
+                    <input type="text" id="leader-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Email:</label>
+                    <input type="email" id="contact-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number:</label>
+                    <input type="tel" id="phone-number" required>
+                </div>
+                <div class="form-group">
+                    <label>Number of Team Members (3-5):</label>
+                    <select id="team-size" required>
+                        <option value="">Select...</option>
+                        <option value="3">3 Members</option>
+                        <option value="4">4 Members</option>
+                        <option value="5">5 Members</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Member Names (comma-separated):</label>
+                    <textarea id="member-names" placeholder="John Doe, Jane Smith, Bob Johnson..." required></textarea>
+                </div>
+                <div class="nav-buttons">
+                    <button type="submit" class="btn">Register Team</button>
+                    <button type="button" class="btn secondary" onclick="showScreen('welcome')">Back</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Team Login -->
+        <div id="team-login" class="screen">
+            <h2>Team Login</h2>
+            <div class="form-group">
+                <label>Team Code:</label>
+                <input type="text" id="login-team-code" placeholder="Enter your team code">
+            </div>
+            <div class="nav-buttons">
+                <button class="btn" onclick="teamLogin()">Login</button>
+                <button class="btn secondary" onclick="showScreen('welcome')">Back</button>
+            </div>
+        </div>
+
+        <!-- Team Dashboard -->
+        <div id="team-dashboard" class="screen">
+            <div class="timer" id="team-timer">Time: 00:00:00</div>
+            <div class="stage-indicator">
+                <h3>Stage <span id="current-stage">1</span> of <span id="total-stages">5</span></h3>
+                <div class="stage-dots" id="stage-dots"></div>
+            </div>
+            
+            <div id="photo-submission" style="display: none;">
+                <h3>Photo Submission Required</h3>
+                <p>Take a group photo with the QR code visible in the background and upload it below:</p>
+                <div class="form-group">
+                    <label>Upload Team Photo:</label>
+                    <input type="file" id="team-photo" accept="image/*" capture="camera">
+                </div>
+                <button class="btn" onclick="submitPhoto()">Submit Photo</button>
+            </div>
+
+            <div id="waiting-approval" style="display: none;">
+                <h3>⏳ Awaiting Admin Approval</h3>
+                <p>Your photo has been submitted and is awaiting verification from our admins.</p>
+                <div class="photo-preview-container">
+                    <img id="submitted-photo" class="photo-preview" style="display: none;">
+                </div>
+            </div>
+
+            <div id="riddle-section" style="display: none;">
+                <div class="riddle-card">
+                    <h3>🧩 Riddle from the Order of the Quill</h3>
+                    <p id="riddle-text"></p>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Your Answer:</label>
+                        <input type="text" id="riddle-answer" placeholder="Enter your answer...">
+                    </div>
+                    <button class="btn" onclick="submitAnswer()">Submit Answer</button>
+                </div>
+            </div>
+
+            <div id="hunt-complete" style="display: none;">
+                <h3>🎉 Quest Complete!</h3>
+                <p>Congratulations! Return to the starting desk to complete your journey.</p>
+                <button class="btn" onclick="completeQuest()">Mark Quest Complete</button>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn secondary" onclick="showScreen('welcome')">Logout</button>
+            </div>
+        </div>
+
+        <!-- Admin Login -->
+        <div id="admin-login" class="screen">
+            <h2>Admin Login</h2>
+            <div class="form-group">
+                <label>Admin Password:</label>
+                <input type="password" id="admin-password" placeholder="Enter admin password">
+            </div>
+            <div class="nav-buttons">
+                <button class="btn" onclick="adminLogin()">Login</button>
+                <button class="btn secondary" onclick="showScreen('welcome')">Back</button>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin-dashboard" class="screen">
+            <h2>Admin Control Panel</h2>
+            
+            <div class="nav-buttons" style="margin-bottom: 30px;">
+                <button class="btn" onclick="showAdminSection('teams')">Manage Teams</button>
+                <button class="btn" onclick="showAdminSection('photos')">Review Photos</button>
+                <button class="btn" onclick="showAdminSection('riddles')">Manage Riddles</button>
+                <button class="btn" onclick="showAdminSection('leaderboard')">Leaderboard</button>
+                <button class="btn secondary" onclick="showScreen('welcome')">Logout</button>
+            </div>
+
+            <div id="admin-teams" class="admin-section">
+                <h3>Team Management</h3>
+                <div id="teams-list"></div>
+            </div>
+
+            <div id="admin-photos" class="admin-section" style="display: none;">
+                <h3>Photo Review</h3>
+                <div id="pending-photos"></div>
+            </div>
+
+            <div id="admin-riddles" class="admin-section" style="display: none;">
+                <h3>Riddle Management</h3>
+                <button class="btn" onclick="showAddRiddleForm()">Add New Riddle</button>
+                <div id="add-riddle-form" style="display: none; margin-top: 20px;">
+                    <div class="form-group">
+                        <label>Stage:</label>
+                        <input type="number" id="riddle-stage" min="1" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Location:</label>
+                        <input type="text" id="riddle-location" placeholder="e.g., Library">
+                    </div>
+                    <div class="form-group">
+                        <label>Riddle Text:</label>
+                        <textarea id="riddle-content" placeholder="Enter the riddle..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Answer:</label>
+                        <input type="text" id="riddle-correct-answer" placeholder="Correct answer">
+                    </div>
+                    <button class="btn" onclick="addRiddle()">Add Riddle</button>
+                    <button class="btn secondary" onclick="hideAddRiddleForm()">Cancel</button>
+                </div>
+                <div id="riddles-list"></div>
+            </div>
+
+            <div id="admin-leaderboard" class="admin-section" style="display: none;">
+                <h3>Leaderboard</h3>
+                <div class="leaderboard" id="leaderboard-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <script>
+        // Global variables
+        let db = null;
+        let storage = null;
+        let gameState = {
+            teams: [],
+            riddles: [
+                {
+                    stage: 1,
+                    location: "Library",
+                    text: "Where knowledge sleeps in rows so neat, Where scholars find their learning seat, Pages whisper ancient lore, What am I behind this door?",
+                    answer: "library"
+                },
+                {
+                    stage: 2,
+                    location: "Cafeteria", 
+                    text: "Hunger calls and students feast, From breakfast time to dinner's east, Tables full of chatter bright, Where do appetites take flight?",
+                    answer: "cafeteria"
+                },
+                {
+                    stage: 3,
+                    location: "Laboratory",
+                    text: "Beakers bubble, circuits hum, Where experiments are never done, Safety goggles, coats of white, Where does science shine its light?",
+                    answer: "laboratory"
+                },
+                {
+                    stage: 4,
+                    location: "Auditorium",
+                    text: "Red velvet seats in rows aligned, Where performances entrance the mind, Spotlights dance on center stage, Where do artists engage?",
+                    answer: "auditorium"
+                },
+                {
+                    stage: 5,
+                    location: "Garden",
+                    text: "Nature's classroom, green and bright, Where flowers bloom in morning light, Paths that wind through peaceful space, What is this learning place?",
+                    answer: "garden"
+                }
+            ],
+            currentTeam: null,
+            pendingPhotos: [],
+            routes: ['red', 'blue', 'green', 'yellow', 'purple'],
+            nextTeamCode: 1001,
+            isFirebaseMode: false
+        };
+
+        // Firebase Configuration and Initialization
+        function initializeFirebase() {
+            const config = {
+                apiKey: document.getElementById('apiKey').value,
+                authDomain: document.getElementById('authDomain').value,
+                projectId: document.getElementById('projectId').value,
+                storageBucket: document.getElementById('storageBucket').value,
+                messagingSenderId: document.getElementById('messagingSenderId').value,
+                appId: document.getElementById('appId').value
+            };
+
+            if (!config.apiKey || !config.projectId) {
+                showError('Please fill in all required Firebase configuration fields.');
+                return;
+            }
+
+            try {
+                firebase.initializeApp(config);
+                db = firebase.firestore();
+                storage = firebase.storage();
+                gameState.isFirebaseMode = true;
+
+                // Save config to localStorage for future use
+                localStorage.setItem('firebaseConfig', JSON.stringify(config));
+
+                showSuccess('Firebase connected successfully!');
+                setTimeout(() => {
+                    showScreen('welcome');
+                    initializeDefaultData();
+                }, 1500);
+
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                showError('Failed to connect to Firebase. Please check your configuration.');
+            }
+        }
+
+        function loadDemoMode() {
+            gameState.isFirebaseMode = false;
+            showSuccess('Running in demo mode (no database)');
+            setTimeout(() => showScreen('welcome'), 1000);
+        }
+
+        // Initialize default riddles in Firebase
+        async function initializeDefaultData() {
+            if (!gameState.isFirebaseMode) return;
+
+            try {
+                const riddlesSnapshot = await db.collection('riddles').get();
+                if (riddlesSnapshot.empty) {
+                    // Add default riddles
+                    for (const riddle of gameState.riddles) {
+                        await db.collection('riddles').add({
+                            ...riddle,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    console.log('Default riddles added to Firebase');
+                }
+            } catch (error) {
+                console.error('Error initializing default data:', error);
+            }
+        }
+
+        // Database Operations
+        async function saveTeamToDatabase(teamData) {
+            if (!gameState.isFirebaseMode) {
+                gameState.teams.push(teamData);
+                return teamData.teamCode;
+            }
+
+            try {
+                await db.collection('teams').doc(teamData.teamCode).set({
+                    ...teamData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    startTime: teamData.startTime ? firebase.firestore.Timestamp.fromDate(teamData.startTime) : null,
+                    endTime: teamData.endTime ? firebase.firestore.Timestamp.fromDate(teamData.endTime) : null
+                });
+                return teamData.teamCode;
+            } catch (error) {
+                console.error('Error saving team:', error);
+                throw error;
+            }
+        }
+
+        async function getTeamFromDatabase(teamCode) {
+            if (!gameState.isFirebaseMode) {
+                return gameState.teams.find(t => t.teamCode === teamCode);
+            }
+
+            try {
+                const doc = await db.collection('teams').doc(teamCode).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    return {
+                        ...data,
+                        startTime: data.startTime?.toDate() || null,
+                        endTime: data.endTime?.toDate() || null
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error getting team:', error);
+                return null;
+            }
+        }
+
+        async function updateTeamInDatabase(teamCode, updates) {
+            if (!gameState.isFirebaseMode) {
+                const team = gameState.teams.find(t => t.teamCode === teamCode);
+                if (team) {
+                    Object.assign(team, updates);
+                }
+                return;
+            }
+
+            try {
+                const firestoreUpdates = { ...updates };
+                if (firestoreUpdates.startTime) {
+                    firestoreUpdates.startTime = firebase.firestore.Timestamp.fromDate(firestoreUpdates.startTime);
+                }
+                if (firestoreUpdates.endTime) {
+                    firestoreUpdates.endTime = firebase.firestore.Timestamp.fromDate(firestoreUpdates.endTime);
+                }
+
+                await db.collection('teams').doc(teamCode).update({
+                    ...firestoreUpdates,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error updating team:', error);
+                throw error;
+            }
+        }
+
+        async function uploadPhotoToStorage(file, teamCode, stage) {
+            if (!gameState.isFirebaseMode) {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            try {
+                const fileName = `photos/${teamCode}_stage${stage}_${Date.now()}.jpg`;
+                const ref = storage.ref().child(fileName);
+                const snapshot = await ref.put(file);
+                return await snapshot.ref.getDownloadURL();
+            } catch (error) {
+                console.error('Error uploading photo:', error);
+                throw error;
+            }
+        }
+
+        async function savePhotoSubmission(submission) {
+            if (!gameState.isFirebaseMode) {
+                gameState.pendingPhotos.push(submission);
+                return;
+            }
+
+            try {
+                await db.collection('photoSubmissions').add({
+                    ...submission,
+                    timestamp: firebase.firestore.Timestamp.fromDate(submission.timestamp)
+                });
+            } catch (error) {
+                console.error('Error saving photo submission:', error);
+                throw error;
+            }
+        }
+
+        // Utility Functions
+        function generateTeamCode() {
+            return 'VQ' + gameState.nextTeamCode++;
+        }
+
+        function assignRoute() {
+            const routeIndex = (gameState.teams.length) % gameState.routes.length;
+            return gameState.routes[routeIndex];
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showError(message, containerId = null) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            
+            if (containerId) {
+                const container = document.getElementById(containerId);
+                container.insertBefore(errorDiv, container.firstChild);
+            } else {
+                document.querySelector('.screen.active').insertBefore(errorDiv, document.querySelector('.screen.active').firstChild);
+            }
+            
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        function showSuccess(message, containerId = null) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.textContent = message;
+            
+            if (containerId) {
+                const container = document.getElementById(containerId);
+                container.insertBefore(successDiv, container.firstChild);
+            } else {
+                document.querySelector('.screen.active').insertBefore(successDiv, document.querySelector('.screen.active').firstChild);
+            }
+            
+            setTimeout(() => successDiv.remove(), 5000);
+        }
+
+        function showLoading(message) {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = message;
+            loadingDiv.id = 'loading-indicator';
+            
+            const activeScreen = document.querySelector('.screen.active');
+            activeScreen.insertBefore(loadingDiv, activeScreen.firstChild);
+            
+            return loadingDiv;
+        }
+
+        function hideLoading() {
+            const loadingDiv = document.getElementById('loading-indicator');
+            if (loadingDiv) loadingDiv.remove();
+        }
+
+        // Team Registration
+        document.getElementById('registration-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            const loading = showLoading('Registering team...');
+            
+            try {
+                const teamData = {
+                    teamCode: generateTeamCode(),
+                    teamName: document.getElementById('team-name').value,
+                    leaderName: document.getElementById('leader-name').value,
+                    contactEmail: document.getElementById('contact-email').value,
+                    phoneNumber: document.getElementById('phone-number').value,
+                    teamSize: parseInt(document.getElementById('team-size').value),
+                    memberNames: document.getElementById('member-names').value.split(',').map(name => name.trim()),
+                    route: assignRoute(),
+                    status: 'registered',
+                    currentStage: 1,
+                    startTime: null,
+                    endTime: null,
+                    photoSubmissions: [],
+                    completedStages: []
+                };
+
+                await saveTeamToDatabase(teamData);
+                
+                hideLoading();
+                alert(`Team registered successfully!\n\nTeam Code: ${teamData.teamCode}\nRoute: ${teamData.route.toUpperCase()}\n\nPlease save your team code for login.`);
+                
+                document.getElementById('registration-form').reset();
+                showScreen('welcome');
+            } catch (error) {
+                hideLoading();
+                showError('Registration failed. Please try again.');
+                console.error('Registration error:', error);
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+
+        // Team Login
+        async function teamLogin() {
+            const teamCode = document.getElementById('login-team-code').value.trim();
+            if (!teamCode) {
+                showError('Please enter a team code.');
+                return;
+            }
+            
+            const loading = showLoading('Logging in...');
+            
+            try {
+                const team = await getTeamFromDatabase(teamCode);
+                
+                if (team) {
+                    gameState.currentTeam = team;
+                    if (!team.startTime) {
+                        team.startTime = new Date();
+                        team.status = 'active';
+                        await updateTeamInDatabase(teamCode, { startTime: team.startTime, status: 'active' });
+                    }
+                    hideLoading();
+                    loadTeamDashboard();
+                    showScreen('team-dashboard');
+                    startTimer();
+                } else {
+                    hideLoading();
+                    showError('Invalid team code. Please check and try again.');
+                }
+            } catch (error) {
+                hideLoading();
+                showError('Login failed. Please try again.');
+                console.error('Login error:', error);
+            }
+        }
+
+        // Team Dashboard Functions
+        async function loadTeamDashboard() {
+            const loading = showLoading('Loading dashboard...');
+            try {
+                await loadRiddles();
+                updateStageIndicator();
+                updateTeamProgress();
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                showError('Failed to load dashboard.');
+                console.error('Dashboard load error:', error);
+            }
+        }
+
+        async function loadRiddles() {
+            if (!gameState.isFirebaseMode) return;
+
+            try {
+                const snapshot = await db.collection('riddles').orderBy('stage').get();
+                gameState.riddles = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+            } catch (error) {
+                console.error('Error loading riddles:', error);
+            }
+        }
+
+        function updateStageIndicator() {
+            const team = gameState.currentTeam;
+            const totalStages = gameState.riddles.length;
+            
+            document.getElementById('current-stage').textContent = team.currentStage;
+            document.getElementById('total-stages').textContent = totalStages;
+            
+            const dotsContainer = document.getElementById('stage-dots');
+            dotsContainer.innerHTML = '';
+            
+            for (let i = 1; i <= totalStages; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (i < team.currentStage) dot.classList.add('completed');
+                if (i === team.currentStage) dot.classList.add('active');
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateTeamProgress() {
+            const team = gameState.currentTeam;
+            const photoSection = document.getElementById('photo-submission');
+            const waitingSection = document.getElementById('waiting-approval');
+            const riddleSection = document.getElementById('riddle-section');
+            const completeSection = document.getElementById('hunt-complete');
+
+            // Hide all sections
+            [photoSection, waitingSection, riddleSection, completeSection].forEach(section => {
+                section.style.display = 'none';
+            });
+
+            if (team.currentStage > gameState.riddles.length) {
+                completeSection.style.display = 'block';
+                return;
+            }
+
+            const currentStageSubmission = team.photoSubmissions.find(p => p.stage === team.currentStage);
+            
+            if (!currentStageSubmission) {
+                photoSection.style.display = 'block';
+            } else if (currentStageSubmission.status === 'pending') {
+                waitingSection.style.display = 'block';
+                const submittedPhoto = document.getElementById('submitted-photo');
+                submittedPhoto.src = currentStageSubmission.photoUrl;
+                submittedPhoto.style.display = 'block';
+            } else if (currentStageSubmission.status === 'approved') {
+                riddleSection.style.display = 'block';
+                const currentRiddle = gameState.riddles.find(r => r.stage === team.currentStage);
+                if (currentRiddle) {
+                    document.getElementById('riddle-text').textContent = currentRiddle.text;
+                }
+            }
+        }
+
+        // Photo Submission
+        async function submitPhoto() {
+            const photoInput = document.getElementById('team-photo');
+            const file = photoInput.files[0];
+            
+            if (!file) {
+                showError('Please select a photo to upload.');
+                return;
+            }
+
+            const loading = showLoading('Uploading photo...');
+            
+            try {
+                const photoUrl = await uploadPhotoToStorage(file, gameState.currentTeam.teamCode, gameState.currentTeam.currentStage);
+                
+                const submission = {
+                    stage: gameState.currentTeam.currentStage,
+                    teamCode: gameState.currentTeam.teamCode,
+                    photoUrl: photoUrl,
+                    timestamp: new Date(),
+                    status: 'pending'
+                };
+
+                gameState.currentTeam.photoSubmissions.push(submission);
+                await updateTeamInDatabase(gameState.currentTeam.teamCode, { 
+                    photoSubmissions: gameState.currentTeam.photoSubmissions 
+                });
+                await savePhotoSubmission(submission);
+                
+                hideLoading();
+                showSuccess('Photo submitted successfully! Awaiting admin approval.');
+                updateTeamProgress();
+            } catch (error) {
+                hideLoading();
+                showError('Photo upload failed. Please try again.');
+                console.error('Photo upload error:', error);
+            }
+        }
+
+        // Riddle Answer Submission
+        async function submitAnswer() {
+            const answer = document.getElementById('riddle-answer').value.trim().toLowerCase();
+            const currentRiddle = gameState.riddles.find(r => r.stage === gameState.currentTeam.currentStage);
+            
+            if (!answer) {
+                showError('Please enter an answer.');
+                return;
+            }
+            
+            if (answer === currentRiddle.answer.toLowerCase()) {
+                const loading = showLoading('Processing answer...');
+                
+                try {
+                    gameState.currentTeam.completedStages.push(gameState.currentTeam.currentStage);
+                    gameState.currentTeam.currentStage++;
+                    
+                    await updateTeamInDatabase(gameState.currentTeam.teamCode, {
+                        completedStages: gameState.currentTeam.completedStages,
+                        currentStage: gameState.currentTeam.currentStage
+                    });
+                    
+                    hideLoading();
+                    const nextLocation = gameState.riddles[gameState.currentTeam.currentStage - 1]?.location || 'Return to start';
+                    showSuccess('Correct! Proceed to the next location: ' + nextLocation);
+                    document.getElementById('riddle-answer').value = '';
+                    loadTeamDashboard();
+                } catch (error) {
+                    hideLoading();
+                    showError('Failed to process answer. Please try again.');
+                    console.error('Answer submission error:', error);
+                }
+            } else {
+                showError('Incorrect answer. Try again!');
+            }
+        }
+
+        // Timer Functions
+        function startTimer() {
+            setInterval(() => {
+                if (gameState.currentTeam && gameState.currentTeam.startTime && !gameState.currentTeam.endTime) {
+                    const elapsed = new Date() - gameState.currentTeam.startTime;
+                    const hours = Math.floor(elapsed / 3600000).toString().padStart(2, '0');
+                    const minutes = Math.floor((elapsed % 3600000) / 60000).toString().padStart(2, '0');
+                    const seconds = Math.floor((elapsed % 60000) / 1000).toString().padStart(2, '0');
+                    document.getElementById('team-timer').textContent = `Time: ${hours}:${minutes}:${seconds}`;
+                }
+            }, 1000);
+        }
+
+        async function completeQuest() {
+            const loading = showLoading('Completing quest...');
+            
+            try {
+                gameState.currentTeam.endTime = new Date();
+                gameState.currentTeam.status = 'completed';
+                
+                await updateTeamInDatabase(gameState.currentTeam.teamCode, {
+                    endTime: gameState.currentTeam.endTime,
+                    status: 'completed'
+                });
+                
+                const totalTime = gameState.currentTeam.endTime - gameState.currentTeam.startTime;
+                const hours = Math.floor(totalTime / 3600000);
+                const minutes = Math.floor((totalTime % 3600000) / 60000);
+                const seconds = Math.floor((totalTime % 60000) / 1000);
+                
+                hideLoading();
+                alert(`Quest completed!\nTotal Time: ${hours}h ${minutes}m ${seconds}s\n\nCongratulations on completing the Vitruvian Quest!`);
+                showScreen('welcome');
+                gameState.currentTeam = null;
+            } catch (error) {
+                hideLoading();
+                showError('Failed to complete quest. Please try again.');
+                console.error('Quest completion error:', error);
+            }
+        }
+
+        // Admin Functions
+        function adminLogin() {
+            const password = document.getElementById('admin-password').value;
+            if (password === 'vitruvian2024') {
+                showScreen('admin-dashboard');
+                loadAdminDashboard();
+            } else {
+                showError('Invalid admin password.');
+            }
+        }
+
+        async function loadAdminDashboard() {
+            showAdminSection('teams');
+        }
+
+        function showAdminSection(section) {
+            document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none');
+            document.getElementById(`admin-${section}`).style.display = 'block';
+            
+            switch(section) {
+                case 'teams':
+                    loadTeamsList();
+                    break;
+                case 'photos':
+                    loadPendingPhotos();
+                    break;
+                case 'riddles':
+                    loadRiddlesList();
+                    break;
+                case 'leaderboard':
+                    loadLeaderboard();
+                    break;
+            }
+        }
+
+        async function loadTeamsList() {
+            const loading = showLoading('Loading teams...');
+            const teamsList = document.getElementById('teams-list');
+            teamsList.innerHTML = '';
+            
+            try {
+                let teams = [];
+                if (gameState.isFirebaseMode) {
+                    const snapshot = await db.collection('teams').get();
+                    teams = snapshot.docs.map(doc => ({
+                        ...doc.data(),
+                        startTime: doc.data().startTime?.toDate() || null,
+                        endTime: doc.data().endTime?.toDate() || null
+                    }));
+                } else {
+                    teams = gameState.teams;
+                }
+                
+                hideLoading();
+                
+                teams.forEach(team => {
+                    const elapsed = team.endTime ? 
+                        (team.endTime - team.startTime) : 
+                        (team.startTime ? (new Date() - team.startTime) : 0);
+                    const timeDisplay = elapsed > 0 ? 
+                        Math.floor(elapsed / 60000) + 'm ' + Math.floor((elapsed % 60000) / 1000) + 's' : 
+                        'Not started';
+
+                    const teamCard = document.createElement('div');
+                    teamCard.className = `team-card route-${team.route}`;
+                    teamCard.innerHTML = `
+                        <h4>${team.teamName} (${team.teamCode})</h4>
+                        <p><strong>Leader:</strong> ${team.leaderName}</p>
+                        <p><strong>Route:</strong> ${team.route.toUpperCase()}</p>
+                        <p><strong>Stage:</strong> ${team.currentStage}/${gameState.riddles.length}</p>
+                        <p><strong>Time:</strong> ${timeDisplay}</p>
+                        <span class="status-badge status-${team.status}">${team.status.toUpperCase()}</span>
+                    `;
+                    teamsList.appendChild(teamCard);
+                });
+            } catch (error) {
+                hideLoading();
+                showError('Failed to load teams.');
+                console.error('Teams load error:', error);
+            }
+        }
+
+        async function loadPendingPhotos() {
+            const loading = showLoading('Loading photos...');
+            const photosContainer = document.getElementById('pending-photos');
+            photosContainer.innerHTML = '';
+            
+            try {
+                let pendingPhotos = [];
+                if (gameState.isFirebaseMode) {
+                    const snapshot = await db.collection('photoSubmissions')
+                        .where('status', '==', 'pending')
+                        .orderBy('timestamp', 'desc')
+                        .get();
+                    pendingPhotos = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data(),
+                        timestamp: doc.data().timestamp?.toDate() || new Date()
+                    }));
+                } else {
+                    pendingPhotos = gameState.pendingPhotos.filter(photo => photo.status === 'pending');
+                }
+                
+                hideLoading();
+                
+                pendingPhotos.forEach(photo => {
+                    const photoCard = document.createElement('div');
+                    photoCard.className = 'team-card';
+                    photoCard.innerHTML = `
+                        <h4>Team: ${photo.teamCode} - Stage ${photo.stage}</h4>
+                        <p><strong>Submitted:</strong> ${photo.timestamp.toLocaleString()}</p>
+                        <img src="${photo.photoUrl}" class="photo-preview" style="max-width: 300px; margin: 10px 0;">
+                        <div>
+                            <button class="btn" onclick="approvePhoto('${photo.teamCode}', ${photo.stage})">Approve</button>
+                            <button class="btn secondary" onclick="rejectPhoto('${photo.teamCode}', ${photo.stage})">Reject</button>
+                        </div>
+                    `;
+                    photosContainer.appendChild(photoCard);
+                });
+            } catch (error) {
+                hideLoading();
+                showError('Failed to load photos.');
+                console.error('Photos load error:', error);
+            }
+        }
+
+        async function approvePhoto(teamCode, stage) {
+            const loading = showLoading('Approving photo...');
+            
+            try {
+                if (gameState.isFirebaseMode) {
+                    // Update in Firebase
+                    const teamRef = db.collection('teams').doc(teamCode);
+                    const teamDoc = await teamRef.get();
+                    const teamData = teamDoc.data();
+                    
+                    const photoSubmissions = teamData.photoSubmissions || [];
+                    const submissionIndex = photoSubmissions.findIndex(p => p.stage === stage);
+                    if (submissionIndex > -1) {
+                        photoSubmissions[submissionIndex].status = 'approved';
+                        await teamRef.update({ photoSubmissions });
+                    }
+                    
+                    // Update photo submission status
+                    const photosSnapshot = await db.collection('photoSubmissions')
+                        .where('teamCode', '==', teamCode)
+                        .where('stage', '==', stage)
+                        .get();
+                    
+                    photosSnapshot.forEach(async (doc) => {
+                        await doc.ref.update({ status: 'approved' });
+                    });
+                } else {
+                    // Update in memory
+                    const team = gameState.teams.find(t => t.teamCode === teamCode);
+                    const submission = team.photoSubmissions.find(p => p.stage === stage);
+                    const pendingPhoto = gameState.pendingPhotos.find(p => p.teamCode === teamCode && p.stage === stage);
+                    
+                    if (submission) submission.status = 'approved';
+                    if (pendingPhoto) pendingPhoto.status = 'approved';
+                }
+                
+                hideLoading();
+                showSuccess('Photo approved!');
+                loadPendingPhotos();
+            } catch (error) {
+                hideLoading();
+                showError('Failed to approve photo.');
+                console.error('Photo approval error:', error);
+            }
+        }
+
+        async function rejectPhoto(teamCode, stage) {
+            const loading = showLoading('Rejecting photo...');
+            
+            try {
+                if (gameState.isFirebaseMode) {
+                    // Remove from Firebase
+                    const teamRef = db.collection('teams').doc(teamCode);
+                    const teamDoc = await teamRef.get();
+                    const teamData = teamDoc.data();
+                    
+                    const photoSubmissions = (teamData.photoSubmissions || []).filter(p => p.stage !== stage);
+                    await teamRef.update({ photoSubmissions });
+                    
+                    // Delete photo submission
+                    const photosSnapshot = await db.collection('photoSubmissions')
+                        .where('teamCode', '==', teamCode)
+                        .where('stage', '==', stage)
+                        .get();
+                    
+                    photosSnapshot.forEach(async (doc) => {
+                        await doc.ref.delete();
+                    });
+                } else {
+                    // Remove from memory
+                    const team = gameState.teams.find(t => t.teamCode === teamCode);
+                    const submissionIndex = team.photoSubmissions.findIndex(p => p.stage === stage);
+                    const pendingIndex = gameState.pendingPhotos.findIndex(p => p.teamCode === teamCode && p.stage === stage);
+                    
+                    if (submissionIndex > -1) team.photoSubmissions.splice(submissionIndex, 1);
+                    if (pendingIndex > -1) gameState.pendingPhotos.splice(pendingIndex, 1);
+                }
+                
+                hideLoading();
+                showSuccess('Photo rejected. Team can resubmit.');
+                loadPendingPhotos();
+            } catch (error) {
+                hideLoading();
+                showError('Failed to reject photo.');
+                console.error('Photo rejection error:', error);
+            }
+        }
+
+        async function loadRiddlesList() {
+            const loading = showLoading('Loading riddles...');
+            const riddlesList = document.getElementById('riddles-list');
+            riddlesList.innerHTML = '';
+            
+            try {
+                await loadRiddles();
+                hideLoading();
+                
+                gameState.riddles.forEach((riddle, index) => {
+                    const riddleCard = document.createElement('div');
+                    riddleCard.className = 'riddle-card';
+                    riddleCard.innerHTML = `
+                        <h4>Stage ${riddle.stage} - ${riddle.location}</h4>
+                        <p><strong>Riddle:</strong> ${riddle.text}</p>
+                        <p><strong>Answer:</strong> ${riddle.answer}</p>
+                        <button class="btn secondary" onclick="deleteRiddle(${index})">Delete</button>
+                    `;
+                    riddlesList.appendChild(riddleCard);
+                });
+            } catch (error) {
+                hideLoading();
+                showError('Failed to load riddles.');
+                console.error('Riddles load error:', error);
+            }
+        }
+
+        function showAddRiddleForm() {
+            document.getElementById('add-riddle-form').style.display = 'block';
+        }
+
+        function hideAddRiddleForm() {
+            document.getElementById('add-riddle-form').style.display = 'none';
+            document.getElementById('add-riddle-form').querySelectorAll('input, textarea').forEach(input => input.value = '');
+        }
+
+        async function addRiddle() {
+            const loading = showLoading('Adding riddle...');
+            
+            try {
+                const newRiddle = {
+                    stage: parseInt(document.getElementById('riddle-stage').value),
+                    location: document.getElementById('riddle-location').value,
+                    text: document.getElementById('riddle-content').value,
+                    answer: document.getElementById('riddle-correct-answer').value.toLowerCase()
+                };
+                
+                if (gameState.isFirebaseMode) {
+                    await db.collection('riddles').add({
+                        ...newRiddle,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    gameState.riddles.push(newRiddle);
+                    gameState.riddles.sort((a, b) => a.stage - b.stage);
+                }
+                
+                hideLoading();
+                showSuccess('Riddle added successfully!');
+                hideAddRiddleForm();
+                loadRiddlesList();
+            } catch (error) {
+                hideLoading();
+                showError('Failed to add riddle.');
+                console.error('Add riddle error:', error);
+            }
+        }
+
+        async function deleteRiddle(index) {
+            if (!confirm('Are you sure you want to delete this riddle?')) return;
+            
+            const loading = showLoading('Deleting riddle...');
+            
+            try {
+                if (gameState.isFirebaseMode) {
+                    const riddle = gameState.riddles[index];
+                    if (riddle.id) {
+                        await db.collection('riddles').doc(riddle.id).delete();
+                    }
+                } else {
+                    gameState.riddles.splice(index, 1);
+                }
+                
+                hideLoading();
+                showSuccess('Riddle deleted.');
+                loadRiddlesList();
+            } catch (error) {
+                hideLoading();
+                showError('Failed to delete riddle.');
+                console.error('Delete riddle error:', error);
+            }
+        }
+
+        async function loadLeaderboard() {
+            const loading = showLoading('Loading leaderboard...');
+            const leaderboardContainer = document.getElementById('leaderboard-content');
+            leaderboardContainer.innerHTML = '';
+            
+            try {
+                let teams = [];
+                if (gameState.isFirebaseMode) {
+                    const snapshot = await db.collection('teams').get();
+                    teams = snapshot.docs.map(doc => ({
+                        ...doc.data(),
+                        startTime: doc.data().startTime?.toDate() || null,
+                        endTime: doc.data().endTime?.toDate() || null
+                    }));
+                } else {
+                    teams = gameState.teams;
+                }
+                
+                const completedTeams = teams
+                    .filter(team => team.status === 'completed')
+                    .sort((a, b) => (a.endTime - a.startTime) - (b.endTime - b.startTime));
+                
+                const activeTeams = teams
+                    .filter(team => team.status === 'active')
+                    .sort((a, b) => b.currentStage - a.currentStage);
+                
+                const allTeams = [...completedTeams, ...activeTeams];
+                
+                hideLoading();
+                
+                allTeams.forEach((team, index) => {
+                    const elapsed = team.endTime ? 
+                        (team.endTime - team.startTime) : 
+                        (team.startTime ? (new Date() - team.startTime) : 0);
+                    const hours = Math.floor(elapsed / 3600000);
+                    const minutes = Math.floor((elapsed % 3600000) / 60000);
+                    const seconds = Math.floor((elapsed % 60000) / 1000);
+                    const timeDisplay = elapsed > 0 ? `${hours}h ${minutes}m ${seconds}s` : 'Not started';
+                    
+                    const leaderboardItem = document.createElement('div');
+                    leaderboardItem.className = 'leaderboard-item';
+                    leaderboardItem.innerHTML = `
+                        <div>
+                            <span class="rank">#${index + 1}</span>
+                            <strong>${team.teamName}</strong>
+                            <span class="status-badge status-${team.status}">${team.status}</span>
+                        </div>
+                        <div>
+                            <span>Stage ${team.currentStage}/${gameState.riddles.length}</span>
+                            <span style="margin-left: 15px;">${timeDisplay}</span>
+                        </div>
+                    `;
+                    leaderboardContainer.appendChild(leaderboardItem);
+                });
+            } catch (error) {
+                hideLoading();
+                showError('Failed to load leaderboard.');
+                console.error('Leaderboard load error:', error);
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved Firebase config
+            const savedConfig = localStorage.getItem('firebaseConfig');
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    Object.keys(config).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) element.value = config[key];
+                    });
+                } catch (e) {
+                    console.log('Error loading saved config');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
